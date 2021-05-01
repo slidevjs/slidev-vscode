@@ -1,4 +1,4 @@
-import { Command, commands, EventEmitter, Position, ProviderResult, Range, Selection, TextEditorRevealType, ThemeIcon, TreeDataProvider, TreeItem, window, workspace } from 'vscode'
+import { Command, commands, EventEmitter, FoldingRange, FoldingRangeKind, FoldingRangeProvider, languages, Position, ProviderResult, Range, Selection, TextDocument, TextEditorRevealType, ThemeIcon, TreeDataProvider, TreeItem, window, workspace } from 'vscode'
 import * as parser from '@slidev/parser'
 import { SlideInfo } from '@slidev/types'
 import Markdown from 'markdown-it'
@@ -94,6 +94,8 @@ export function configEditor() {
     })
   })
 
+  languages.registerFoldingRangeProvider({ language: 'markdown' }, new FoldingProvider())
+
   ctx.onDataUpdate(() => provider.refresh())
 
   update()
@@ -116,6 +118,17 @@ function revealSlide(idx: number, editor = window.activeTextEditor) {
   const range = new Range(pos, pos)
   editor.selection = new Selection(pos, pos)
   editor.revealRange(range, TextEditorRevealType.AtTop)
+}
+
+export class FoldingProvider implements FoldingRangeProvider {
+  private _onDidChangeFoldingRanges = new EventEmitter<void>()
+  readonly onDidChangeFoldingRanges = this._onDidChangeFoldingRanges.event
+
+  provideFoldingRanges(document: TextDocument): FoldingRange[] {
+    if (document === ctx.doc && ctx.data)
+      return ctx.data.slides.map(i => new FoldingRange(i.start - 1, i.end - 1, FoldingRangeKind.Region))
+    return []
+  }
 }
 
 export class SlideItem implements TreeItem {

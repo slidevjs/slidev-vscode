@@ -3,7 +3,7 @@
   "preview": true,
   "displayName": "Slidev",
   "version": "0.0.3",
-  "description": "Slidev support for Vite",
+  "description": "Slidev support for VS Code",
   "publisher": "antfu",
   "license": "MIT",
   "icon": "res/logo.png",

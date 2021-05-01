@@ -2,7 +2,7 @@
   "name": "slidev",
   "preview": true,
   "displayName": "Slidev",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Slidev support for Vite",
   "publisher": "antfu",
   "license": "MIT",

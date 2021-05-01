@@ -52,10 +52,10 @@
     "@antfu/eslint-config-react" "^0.6.4"
     "@antfu/eslint-config-vue" "^0.6.4"
 
-"@antfu/utils@^0.1.2":
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/@antfu/utils/-/utils-0.1.2.tgz#e8973402b960fb5e483c853507e9cfbb6ac8f5ce"
-  integrity sha512-K0/7dm3+egRIGlQeykgfBbPCs6WDgmKLWvmqY5dWj4aZTRqPy3ViTq7n3YDjRICkad+NAedQD8GmabNsXXScSw==
+"@antfu/utils@^0.1.3":
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/@antfu/utils/-/utils-0.1.3.tgz#764626adc85f5984762c4f1d5cd8b125519419a4"
+  integrity sha512-dqN0Q8DWDYZIwt0UDbNn4ttg/neR9S0urFfqnVC+4F2w/AEqx9O99+E+5os6AshJatq6iaFUp9lZ3v9Bw0ucCw==
 
 "@babel/code-frame@7.12.11":
   version "7.12.11"
@@ -304,18 +304,18 @@
     "@nodelib/fs.scandir" "2.1.4"
     fastq "^1.6.0"
 
-"@slidev/parser@^0.0.0-alpha.39":
-  version "0.0.0-alpha.39"
-  resolved "https://registry.yarnpkg.com/@slidev/parser/-/parser-0.0.0-alpha.39.tgz#a131c34a063e703d1ff0ba2598258f35d2d700f8"
-  integrity sha512-GTX4LKENiNa9sXtYffds1cFRkO+VDdvARqDJgRwvTArwsPAaWjZEkSSnyF1T6nioCS55sn+twBDh7xXEIyJINA==
+"@slidev/parser@^0.0.0-alpha.40":
+  version "0.0.0-alpha.40"
+  resolved "https://registry.yarnpkg.com/@slidev/parser/-/parser-0.0.0-alpha.40.tgz#d9d7441e932f71283ec42845baa2a1a466d33690"
+  integrity sha512-NZtPdU6yfO1Ycbu0LZoMT6n8gGrZSrkYwFaAEoT+MoFDAfriiZBQuhR4dOZp2dzIpabnb7mNgKgUVFSSCqx/PQ==
   dependencies:
     gray-matter "^4.0.3"
     js-yaml "^3.14.1"
 
-"@slidev/types@^0.0.0-alpha.39":
-  version "0.0.0-alpha.39"
-  resolved "https://registry.yarnpkg.com/@slidev/types/-/types-0.0.0-alpha.39.tgz#9e80a50638f20abeb461380e1908ebc1cf039acf"
-  integrity sha512-IcGl5/EetvI8jvHpPr5dZ0i99rJ+oqfauKtQWf1CcsqJFCJCVamQX5PLlc5MVRSUK2EbpqBK6WVqc6H10a82Ew==
+"@slidev/types@^0.0.0-alpha.40":
+  version "0.0.0-alpha.40"
+  resolved "https://registry.yarnpkg.com/@slidev/types/-/types-0.0.0-alpha.40.tgz#88c3819188dcac09799a26e7129a09a506331797"
+  integrity sha512-QBUVxcBBeolhDMQ+cbJZZu8F3qFxViAI53TE8+n4gz01XJx7Ls+QnIzpDTHEhbA+TF7eKOAw5sHqRpxeoLC3Dg==
 
 "@types/json-schema@^7.0.3":
   version "7.0.7"

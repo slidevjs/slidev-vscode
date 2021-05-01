@@ -1,4 +1,4 @@
-import { Command, commands, EventEmitter, Position, ProviderResult, Range, TextEditorRevealType, ThemeIcon, TreeDataProvider, TreeItem, window, workspace } from 'vscode'
+import { Command, commands, EventEmitter, Position, ProviderResult, Range, Selection, TextEditorRevealType, ThemeIcon, TreeDataProvider, TreeItem, window, workspace } from 'vscode'
 import * as parser from '@slidev/parser'
 import { SlideInfo } from '@slidev/types'
 import { ctx } from './ctx'
@@ -14,6 +14,12 @@ export function configEditor() {
     ctx.data = parser.parse(doc.getText(), doc.uri.fsPath)
   }
 
+  workspace.createFileSystemWatcher('**/*.md', true, false)
+    .onDidChange(async(uri) => {
+      if (uri.fsPath === ctx.doc?.uri.fsPath)
+        ctx.data = await parser.load(uri.fsPath)
+    })
+
   ctx.subscriptions.push(
     workspace.onDidSaveTextDocument(update),
     window.onDidChangeActiveTextEditor(update),
@@ -25,11 +31,47 @@ export function configEditor() {
     showCollapseAll: true,
   })
 
-  commands.registerCommand('slidev.goto', async(range: Range) => {
-    if (range && ctx.doc) {
+  commands.registerCommand('slidev.goto', async(idx: number) => {
+    if (ctx.doc) {
       const editor = await window.showTextDocument(ctx.doc)
-      editor.revealRange(range, TextEditorRevealType.AtTop)
+      revealSlide(idx, editor)
     }
+  })
+
+  commands.registerCommand('slidev.next', async() => {
+    const editor = window.activeTextEditor
+    if (!editor || editor.document !== ctx.doc)
+      return
+    const index = getCurrentSlideIndex(editor)
+    if (index != null)
+      revealSlide(index + 1)
+  })
+
+  commands.registerCommand('slidev.prev', async() => {
+    const editor = window.activeTextEditor
+    if (!editor || editor.document !== ctx.doc)
+      return
+    const index = getCurrentSlideIndex(editor) || 0
+    revealSlide(index - 1)
+  })
+
+  function move<T>(arr: T[], from: number, to: number) {
+    arr.splice(to, 0, arr.splice(from, 1)[0])
+    return arr
+  }
+
+  commands.registerCommand('slidev.move-up', async(item: SlideItem) => {
+    if (!ctx.data?.slides || item.info.index <= 0)
+      return
+    move(ctx.data.slides, item.info.index, item.info.index - 1)
+    parser.save(ctx.data)
+  })
+
+  commands.registerCommand('slidev.move-down', async(item: SlideItem) => {
+    if (!ctx.data?.slides || item.info.index >= ctx.data.slides.length)
+      return
+    move(ctx.data.slides, item.info.index, item.info.index + 1)
+    parser.save(ctx.data)
   })
 
   ctx.onDataUpdate(() => {
@@ -37,6 +79,25 @@ export function configEditor() {
   })
 
   update()
+}
+
+function getCurrentSlideIndex(editor = window.activeTextEditor) {
+  if (!editor)
+    return
+  const line = editor.selection.start.line + 1
+  return ctx.data?.slides.findIndex(i => i.start <= line && i.end >= line)
+}
+
+function revealSlide(idx: number, editor = window.activeTextEditor) {
+  if (idx < 0 || !editor)
+    return
+  const slide = ctx.data?.slides[idx]
+  if (!slide)
+    return
+  const pos = new Position(slide.start, 0)
+  const range = new Range(pos, pos)
+  editor.selection = new Selection(pos, pos)
+  editor.revealRange(range, TextEditorRevealType.AtTop)
 }
 
 export class SlideItem implements TreeItem {
@@ -50,12 +111,10 @@ export class SlideItem implements TreeItem {
     if (!info.title)
       this.description = '(Untitled)'
 
-    const pos = new Position(info.start, 0)
-    const range = new Range(pos, pos)
     this.command = {
       command: 'slidev.goto',
       title: 'Goto',
-      arguments: [range],
+      arguments: [info.index],
     }
 
     if (info.index === 0)
@@ -84,6 +143,12 @@ export class SlideItem implements TreeItem {
       case 'intro':
         this.iconPath = ctx.ext.asAbsolutePath('./res/icons/carbon-identification.svg')
         break
+    }
+
+    if (info.frontmatter.disabled) {
+      this.iconPath = ctx.ext.asAbsolutePath('./res/icons/carbon-view-off.svg')
+      this.description = this.label
+      this.label = ''
     }
   }
 }

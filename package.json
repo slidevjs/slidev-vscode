@@ -52,6 +52,11 @@
         "category": "Slidev",
         "title": "Move slide down",
         "icon": "$(triangle-down)"
+      },
+      {
+        "command": "slidev.markdown-to-html",
+        "category": "Slidev",
+        "title": "Convert current selection to HTML"
       }
     ],
     "menus": {
@@ -116,9 +121,11 @@
     "@antfu/utils": "^0.1.3",
     "@slidev/parser": "^0.0.0-alpha.40",
     "@slidev/types": "^0.0.0-alpha.40",
+    "@types/markdown-it": "^12.0.1",
     "@types/node": "^15.0.1",
     "@types/vscode": "^1.52.0",
     "eslint": "^7.25.0",
+    "markdown-it": "^12.0.6",
     "pkg-up": "^3.1.0",
     "tsup": "^4.10.1",
     "types-package-json": "^2.0.39",

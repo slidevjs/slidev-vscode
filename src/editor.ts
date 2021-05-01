@@ -1,6 +1,7 @@
 import { Command, commands, EventEmitter, Position, ProviderResult, Range, Selection, TextEditorRevealType, ThemeIcon, TreeDataProvider, TreeItem, window, workspace } from 'vscode'
 import * as parser from '@slidev/parser'
 import { SlideInfo } from '@slidev/types'
+import Markdown from 'markdown-it'
 import { ctx } from './ctx'
 
 export function configEditor() {
@@ -74,9 +75,26 @@ export function configEditor() {
     parser.save(ctx.data)
   })
 
-  ctx.onDataUpdate(() => {
-    provider.refresh()
+  commands.registerCommand('slidev.markdown-to-html', async() => {
+    const editor = window.activeTextEditor
+    const doc = editor?.document
+    if (!editor || !doc)
+      return
+
+    const range = editor.selection
+    const md = doc.getText(range)
+    const html = new Markdown({
+      html: true,
+      linkify: true,
+      xhtmlOut: true,
+    }).render(md)
+
+    editor.edit((edit) => {
+      edit.replace(range, html)
+    })
   })
+
+  ctx.onDataUpdate(() => provider.refresh())
 
   update()
 }

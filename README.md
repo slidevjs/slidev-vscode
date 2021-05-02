@@ -31,8 +31,8 @@ Presentation <b>slide</b>s for <b>dev</b>elopers<br>
 ## Sponsors
 
 <p align="center">
-  <a href="https://cdn.jsdelivr.net/gh/antfu/static/sponsors.svg">
-    <img src='https://cdn.jsdelivr.net/gh/antfu/static/sponsors.svg'/>
+  <a href="https://antfu.me/sponsor">
+    <img src='https://cdn.jsdelivr.net/gh/antfu/static/sponsors.png'/>
   </a>
 </p>
 

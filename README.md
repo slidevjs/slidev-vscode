@@ -28,7 +28,7 @@ Presentation <b>slide</b>s for <b>dev</b>elopers<br>
 - Folding for slide blocks
 - Convert Markdown to HTML
 
-<img width="974" alt="Screen Shot 2021-05-02 at 6 22 02 PM" src="https://user-images.githubusercontent.com/11247099/116809994-cc2caa00-ab73-11eb-879f-60585747c3c9.png">
+<img width="974" src="https://user-images.githubusercontent.com/11247099/116809994-cc2caa00-ab73-11eb-879f-60585747c3c9.png">
 
 ## Sponsors
 

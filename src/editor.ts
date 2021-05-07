@@ -1,5 +1,6 @@
 import { Command, commands, EventEmitter, FoldingRange, FoldingRangeKind, FoldingRangeProvider, languages, Position, ProviderResult, Range, Selection, TextDocument, TextEditorRevealType, ThemeIcon, TreeDataProvider, TreeItem, window, workspace } from 'vscode'
-import * as parser from '@slidev/parser'
+// @ts-expect-error
+import * as parser from '@slidev/parser/fs'
 import { SlideInfo } from '@slidev/types'
 import Markdown from 'markdown-it'
 import { ctx } from './ctx'
@@ -138,7 +139,7 @@ export class SlideItem implements TreeItem {
   command?: Command
 
   constructor(public readonly info: SlideInfo) {
-    this.label = info.title || ''
+    this.label = `${info.index + 1} - ${info.title || ''}`
     if (!info.title)
       this.description = '(Untitled)'
 

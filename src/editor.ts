@@ -89,6 +89,8 @@ export function configEditor() {
     parser.save(ctx.data)
   })
 
+  commands.registerCommand('slidev.preview-refresh', previewProvider.refresh.bind(previewProvider))
+
   commands.registerCommand('slidev.markdown-to-html', async() => {
     const editor = window.activeTextEditor
     const doc = editor?.document
@@ -222,6 +224,7 @@ export class PreviewProvider implements WebviewViewProvider {
   public view: WebviewView | undefined
 
   public async refresh() {
+    console.log('refresh')
     const editor = window.activeTextEditor
     if (!editor || editor.document !== ctx.doc)
       return
@@ -234,9 +237,13 @@ export class PreviewProvider implements WebviewViewProvider {
       localResourceRoots: [ctx.ext.extensionUri],
     }
 
+    // TODO: get port from process info
     const serverAddr = 'http://127.0.0.1:3030/'
 
-    const defaultHTML = await got.get(`${serverAddr}index.html`, { responseType: 'text', resolveBodyOnly: true })
+    const defaultHTML = await got.get(`${serverAddr}index.html`, { responseType: 'text', resolveBodyOnly: true }).catch(() => {
+      // error html
+      return Promise.resolve('<div style="text-align: center"><p>Sorry, the preview server not start</p><p>please run <code style="color: red">slide dev</code> first</p></div>')
+    })
 
     const fullWebServerUri = await env.asExternalUri(
       Uri.parse(serverAddr),

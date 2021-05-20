@@ -54,6 +54,12 @@
         "icon": "$(triangle-down)"
       },
       {
+        "command": "slidev.preview-refresh",
+        "category": "Slidev",
+        "title": "Preivew Refresh",
+        "icon": "$(refresh)"
+      },
+      {
         "command": "slidev.markdown-to-html",
         "category": "Slidev",
         "title": "Convert current selection to HTML"
@@ -82,6 +88,13 @@
           "command": "slidev.move-down",
           "when": "view =~ /slidev-slides/",
           "group": "inline@1"
+        }
+      ],
+      "view/title": [
+        {
+          "command": "slidev.preview-refresh",
+          "when": "view =~ /slidev-preview/",
+          "group": "navigation"
         }
       ]
     },

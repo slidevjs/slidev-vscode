@@ -106,6 +106,12 @@
           "id": "slidev-slides",
           "name": "Slides",
           "when": "slidev-enabled"
+        },
+        {
+          "type": "webview",
+          "id": "slidev-preview",
+          "name": "Preview",
+          "when": "slidev-enabled"
         }
       ]
     }
@@ -125,6 +131,7 @@
     "@types/node": "^15.0.2",
     "@types/vscode": "^1.52.0",
     "eslint": "^7.25.0",
+    "got": "^11.8.2",
     "markdown-it": "^12.0.6",
     "pkg-up": "^3.1.0",
     "tsup": "^4.10.1",

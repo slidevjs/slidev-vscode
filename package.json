@@ -136,18 +136,18 @@
     "release": "npx bumpp --commit --tag --push && vsce publish"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^0.6.4",
-    "@antfu/utils": "^0.1.5",
-    "@slidev/parser": "^0.5.0",
-    "@slidev/types": "^0.5.0",
+    "@antfu/eslint-config": "^0.6.5",
+    "@antfu/utils": "^0.1.6",
+    "@slidev/parser": "^0.10.5",
+    "@slidev/types": "^0.10.5",
     "@types/markdown-it": "^12.0.1",
-    "@types/node": "^15.0.2",
+    "@types/node": "^15.3.1",
     "@types/vscode": "^1.52.0",
-    "eslint": "^7.25.0",
+    "eslint": "^7.26.0",
     "got": "^11.8.2",
     "markdown-it": "^12.0.6",
     "pkg-up": "^3.1.0",
-    "tsup": "^4.10.1",
+    "tsup": "^4.11.0",
     "types-package-json": "^2.0.39",
     "typescript": "^4.2.4"
   }

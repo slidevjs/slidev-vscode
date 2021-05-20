@@ -1,4 +1,4 @@
-import { Command, env, Uri, commands, EventEmitter, WebviewView, WebviewViewProvider, FoldingRange, FoldingRangeKind, FoldingRangeProvider, languages, Position, ProviderResult, Range, Selection, TextDocument, TextEditorRevealType, ThemeIcon, TreeDataProvider, TreeItem, window, workspace } from 'vscode'
+import { Command, commands, EventEmitter, WebviewView, WebviewViewProvider, FoldingRange, FoldingRangeKind, FoldingRangeProvider, languages, Position, ProviderResult, Range, Selection, TextDocument, TextEditorRevealType, ThemeIcon, TreeDataProvider, TreeItem, window, workspace } from 'vscode'
 import got from 'got'
 // @ts-expect-error
 import * as parser from '@slidev/parser/fs'
@@ -8,6 +8,8 @@ import { ctx } from './ctx'
 
 export function configEditor() {
   const previewProvider = new PreviewProvider()
+  let previousSlideIndex = -1
+
   function update() {
     const editor = window.activeTextEditor
     const doc = editor?.document
@@ -16,11 +18,16 @@ export function configEditor() {
 
     ctx.doc = doc
     ctx.data = parser.parse(doc.getText(), doc.uri.fsPath)
+  }
 
-    // update webview
-    if (previewProvider.view?.visible) {
-      console.log('update update', previewProvider.view?.visible)
-      previewProvider.refresh()
+  function updateCurrentSlide() {
+    if (!previewProvider.view?.visible)
+      return
+
+    const current = getCurrentSlideIndex()
+    if (current != null && current !== previousSlideIndex) {
+      previousSlideIndex = current
+      previewProvider.updateSlide(current)
     }
   }
 
@@ -38,6 +45,7 @@ export function configEditor() {
       previewProvider,
       { webviewOptions: { retainContextWhenHidden: true } },
     ),
+    window.onDidChangeTextEditorSelection(updateCurrentSlide),
   )
 
   const provider = new SlidesProvider()
@@ -223,22 +231,30 @@ export class PreviewProvider implements WebviewViewProvider {
   public static readonly viewId = 'slidev-preview'
   public view: WebviewView | undefined
 
-  private randomNonce(length = 15) {
-    let last: any = null
-    let repeat = 0
+  public updateColor() {
+    if (!this.view)
+      return
 
-    const now = Math.pow(10, 2) * +new Date()
+    this.view.webview.postMessage({
+      target: 'slidev',
+      type: 'css-vars',
+      vars: {
+        '--slidev-slide-container-background': 'transparent',
+      },
+    })
+    this.view.webview.postMessage({
+      target: 'slidev',
+      type: 'color-schema',
+      color: isDarkTheme() ? 'dark' : 'light',
+    })
+  }
 
-    if (now === last) {
-      repeat++
-    }
-    else {
-      repeat = 0
-      last = now
-    }
+  public updateSlide(idx: number) {
+    if (!this.view)
+      return
 
-    const s = (now + repeat).toString()
-    return +s.substr(s.length - length)
+    this.view.webview.postMessage({ target: 'slidev', type: 'navigate', no: idx + 1 })
+    this.updateColor()
   }
 
   public async refresh() {
@@ -257,33 +273,66 @@ export class PreviewProvider implements WebviewViewProvider {
     }
 
     // TODO: get port from process info
-    const serverAddr = 'http://127.0.0.1:3030/'
+    const serverAddr = 'http://localhost:3030/'
+    const url = `${serverAddr}${idx}?embedded=true`
 
-    const defaultHTML = await got.get(`${serverAddr}index.html`, { responseType: 'text', resolveBodyOnly: true }).catch(() => {
-      // error html
-      return Promise.resolve('<div style="text-align: center"><p>Sorry, the preview server not start</p><p>please run <code style="color: red">slide dev</code> first</p></div>')
+    try {
+      await got.get(`${serverAddr}index.html`, { responseType: 'text', resolveBodyOnly: true })
+    }
+    catch {
+      this.view.webview.html = `
+<head>
+  <meta
+    http-equiv="Content-Security-Policy"
+    content="default-src * 'unsafe-inline' 'unsafe-eval'; script-src * 'unsafe-inline' 'unsafe-eval'; connect-src * 'unsafe-inline'; img-src * data: blob: 'unsafe-inline'; frame-src *; style-src * 'unsafe-inline';"
+  />
+<head>
+<body>
+  <div style="text-align: center"><p>Sorry, the preview server not start</p><p>please run <code style="color: orange">slide dev</code> first</p></div>
+</body>
+`
+      return
+    }
+
+    this.view.webview.html = `
+<head>
+  <meta
+    http-equiv="Content-Security-Policy"
+    content="default-src * 'unsafe-inline' 'unsafe-eval'; script-src * 'unsafe-inline' 'unsafe-eval'; connect-src * 'unsafe-inline'; img-src * data: blob: 'unsafe-inline'; frame-src *; style-src * 'unsafe-inline';"
+  />
+<head>
+<body>
+  <script>
+    window.addEventListener('load', () => {
+      location.replace(${JSON.stringify(url)})
     })
+  </script>
+</body>
+`
 
-    const fullWebServerUri = await env.asExternalUri(
-      Uri.parse(serverAddr),
-    )
-
-    const cspSource = this.view.webview.cspSource
-    // solve CSP
-    const html = defaultHTML?.replace('<head>', `
-    <head>
-    <meta
-      http-equiv="Content-Security-Policy"
-      content="default-src 'none'; img-src ${fullWebServerUri} ${cspSource} https: http:; script-src ${fullWebServerUri} 'nonce-${this.randomNonce()}' ${cspSource} unsafe-inline; style-src ${fullWebServerUri} ${cspSource} 'unsafe-inline';"
-    />
-    <base href="${serverAddr}${idx}" target="_blank">
-    `)
-
-    this.view.webview.html = html
+    setTimeout(() => {
+      this.updateColor()
+    }, 1000)
   }
 
   public async resolveWebviewView(webviewView: WebviewView) {
     this.view = webviewView
     this.refresh()
   }
+}
+
+export function isDarkTheme() {
+  const theme = workspace.getConfiguration()
+    .get('workbench.colorTheme', '')
+
+  // must be dark
+  if (theme.match(/dark|black/i) != null)
+    return true
+
+  // must be light
+  if (theme.match(/light/i) != null)
+    return false
+
+  // IDK, maybe dark
+  return true
 }

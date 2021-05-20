@@ -1,4 +1,5 @@
-import { Command, commands, EventEmitter, FoldingRange, FoldingRangeKind, FoldingRangeProvider, languages, Position, ProviderResult, Range, Selection, TextDocument, TextEditorRevealType, ThemeIcon, TreeDataProvider, TreeItem, window, workspace } from 'vscode'
+import { Command, env, Uri, commands, EventEmitter, WebviewView, WebviewViewProvider, FoldingRange, FoldingRangeKind, FoldingRangeProvider, languages, Position, ProviderResult, Range, Selection, TextDocument, TextEditorRevealType, ThemeIcon, TreeDataProvider, TreeItem, window, workspace } from 'vscode'
+import got from 'got'
 // @ts-expect-error
 import * as parser from '@slidev/parser/fs'
 import { SlideInfo } from '@slidev/types'
@@ -6,6 +7,7 @@ import Markdown from 'markdown-it'
 import { ctx } from './ctx'
 
 export function configEditor() {
+  const previewProvider = new PreviewProvider()
   function update() {
     const editor = window.activeTextEditor
     const doc = editor?.document
@@ -14,6 +16,12 @@ export function configEditor() {
 
     ctx.doc = doc
     ctx.data = parser.parse(doc.getText(), doc.uri.fsPath)
+
+    // update webview
+    if (previewProvider.view?.visible) {
+      console.log('update update', previewProvider.view?.visible)
+      previewProvider.refresh()
+    }
   }
 
   workspace.createFileSystemWatcher('**/*.md', true, false)
@@ -25,6 +33,11 @@ export function configEditor() {
   ctx.subscriptions.push(
     workspace.onDidSaveTextDocument(update),
     window.onDidChangeActiveTextEditor(update),
+    window.registerWebviewViewProvider(
+      PreviewProvider.viewId,
+      previewProvider,
+      { webviewOptions: { retainContextWhenHidden: true } },
+    ),
   )
 
   const provider = new SlidesProvider()
@@ -75,6 +88,8 @@ export function configEditor() {
     move(ctx.data.slides, item.info.index, item.info.index + 1)
     parser.save(ctx.data)
   })
+
+  commands.registerCommand('slidev.preview-refresh', previewProvider.refresh.bind(previewProvider))
 
   commands.registerCommand('slidev.markdown-to-html', async() => {
     const editor = window.activeTextEditor
@@ -201,5 +216,74 @@ export class SlidesProvider implements TreeDataProvider<SlideItem> {
     if (!element)
       return ctx.data?.slides.map(i => new SlideItem(i))
     return []
+  }
+}
+
+export class PreviewProvider implements WebviewViewProvider {
+  public static readonly viewId = 'slidev-preview'
+  public view: WebviewView | undefined
+
+  private randomNonce(length = 15) {
+    let last: any = null
+    let repeat = 0
+
+    const now = Math.pow(10, 2) * +new Date()
+
+    if (now === last) {
+      repeat++
+    }
+    else {
+      repeat = 0
+      last = now
+    }
+
+    const s = (now + repeat).toString()
+    return +s.substr(s.length - length)
+  }
+
+  public async refresh() {
+    const editor = window.activeTextEditor
+    if (!editor || editor.document !== ctx.doc)
+      return
+
+    if (!this.view)
+      return
+
+    const idx = getCurrentSlideIndex(editor)
+
+    this.view.webview.options = {
+      enableScripts: true,
+      localResourceRoots: [ctx.ext.extensionUri],
+    }
+
+    // TODO: get port from process info
+    const serverAddr = 'http://127.0.0.1:3030/'
+
+    const defaultHTML = await got.get(`${serverAddr}index.html`, { responseType: 'text', resolveBodyOnly: true }).catch(() => {
+      // error html
+      return Promise.resolve('<div style="text-align: center"><p>Sorry, the preview server not start</p><p>please run <code style="color: red">slide dev</code> first</p></div>')
+    })
+
+    const fullWebServerUri = await env.asExternalUri(
+      Uri.parse(serverAddr),
+    )
+
+    const cspSource = this.view.webview.cspSource
+    // solve CSP
+    const html = defaultHTML?.replace('<head>', `
+    <head>
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; img-src ${fullWebServerUri} ${cspSource} https: http:; script-src ${fullWebServerUri} 'nonce-${this.randomNonce()}' ${cspSource} unsafe-inline; style-src ${fullWebServerUri} ${cspSource} 'unsafe-inline';"
+    />
+    <base href="${serverAddr}${idx}" target="_blank">
+    `)
+
+    this.view.webview.html = html
+  }
+
+  public async resolveWebviewView(webviewView: WebviewView) {
+    this.view = webviewView
+    this.refresh()
   }
 }

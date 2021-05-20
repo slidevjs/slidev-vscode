@@ -2,7 +2,7 @@
   "name": "slidev",
   "preview": true,
   "displayName": "Slidev",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Slidev support for VS Code",
   "publisher": "antfu",
   "license": "MIT",

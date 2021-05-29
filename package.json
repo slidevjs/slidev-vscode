@@ -56,7 +56,7 @@
       {
         "command": "slidev.preview-refresh",
         "category": "Slidev",
-        "title": "Preivew Refresh",
+        "title": "Preview Refresh",
         "icon": "$(refresh)"
       },
       {

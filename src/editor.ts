@@ -272,14 +272,21 @@ export class PreviewProvider implements WebviewViewProvider {
       localResourceRoots: [ctx.ext.extensionUri],
     }
 
-    // TODO: get port from process info
-    const serverAddr = 'http://localhost:3030/'
+    const serverAddr = `http://localhost:${getServerPort()}/`
     const url = `${serverAddr}${idx}?embedded=true`
-
     try {
       await got.get(`${serverAddr}index.html`, { responseType: 'text', resolveBodyOnly: true })
     }
     catch {
+      window.showErrorMessage(`The ${serverAddr} page isn't work, please run slide dev or set the correct port of the server`, 'set the port').then(async command => {
+        if (command === 'set the port') {
+          let port = await window.showInputBox({
+            placeHolder: 'input server port',
+          })
+          await setServerPort(port || '3030')
+          this.refresh()
+        }
+      })
       this.view.webview.html = `
 <head>
   <meta
@@ -335,4 +342,13 @@ export function isDarkTheme() {
 
   // IDK, maybe dark
   return true
+}
+
+function getServerPort() {
+  console.log(workspace.getConfiguration('Slidev').get('serverPort'))
+  return workspace.getConfiguration('Slidev').get('serverPort') || 3030
+}
+
+async function setServerPort(port: string) {
+  await workspace.getConfiguration('Slidev').update('serverPort', port, true)
 }

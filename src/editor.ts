@@ -272,21 +272,20 @@ export class PreviewProvider implements WebviewViewProvider {
       localResourceRoots: [ctx.ext.extensionUri],
     }
 
+    this.view.webview.onDidReceiveMessage(async (message) => {
+      let port = await window.showInputBox({
+        placeHolder: 'input server port',
+      })
+      await setServerPort(port || '3030')
+      this.refresh()
+    })
+
     const serverAddr = `http://localhost:${getServerPort()}/`
     const url = `${serverAddr}${idx}?embedded=true`
     try {
       await got.get(`${serverAddr}index.html`, { responseType: 'text', resolveBodyOnly: true })
     }
     catch {
-      window.showErrorMessage(`The ${serverAddr} page isn't work, please run slide dev or set the correct port of the server`, 'set the port').then(async command => {
-        if (command === 'set the port') {
-          let port = await window.showInputBox({
-            placeHolder: 'input server port',
-          })
-          await setServerPort(port || '3030')
-          this.refresh()
-        }
-      })
       this.view.webview.html = `
 <head>
   <meta
@@ -294,8 +293,16 @@ export class PreviewProvider implements WebviewViewProvider {
     content="default-src * 'unsafe-inline' 'unsafe-eval'; script-src * 'unsafe-inline' 'unsafe-eval'; connect-src * 'unsafe-inline'; img-src * data: blob: 'unsafe-inline'; frame-src *; style-src * 'unsafe-inline';"
   />
 <head>
+<script>
+  const vscode = acquireVsCodeApi();
+  window.cl = () => {
+    vscode.postMessage({
+      command: "set"
+    });
+  }
+</script>
 <body>
-  <div style="text-align: center"><p>Sorry, the preview server not start</p><p>please run <code style="color: orange">slide dev</code> first</p></div>
+  <div style="text-align: center"><p>Sorry, the preview server not start on ${serverAddr}</p><p>please run <code style="color: orange">slide dev</code> first</p><button onclick="cl()">Set the port</button></div>
 </body>
 `
       return
@@ -345,7 +352,6 @@ export function isDarkTheme() {
 }
 
 function getServerPort() {
-  console.log(workspace.getConfiguration('Slidev').get('serverPort'))
   return workspace.getConfiguration('Slidev').get('serverPort') || 3030
 }
 

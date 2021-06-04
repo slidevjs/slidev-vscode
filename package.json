@@ -102,11 +102,11 @@
       "type": "object",
       "title": "Slidev",
       "properties": {
-        "Slidev.serverPort": {
-          "type": "string",
-          "scope": "application",
-          "description": "The port of slidev server",
-          "default": "3030"
+        "slidev.port": {
+          "type": "number",
+          "scope": "window",
+          "description": "The port of Slidev server",
+          "default": 3030
         }
       }
     },

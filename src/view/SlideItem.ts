@@ -52,5 +52,8 @@ export class SlideItem implements TreeItem {
       this.description = this.label
       this.label = ''
     }
+
+    if (info.source)
+      this.iconPath = ctx.ext.asAbsolutePath('./res/icons/carbon-script-reference.svg')
   }
 }

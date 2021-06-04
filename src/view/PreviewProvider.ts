@@ -64,11 +64,8 @@ export class PreviewProvider implements WebviewViewProvider {
 
     const serverAddr = `http://localhost:${config.port}/`
     const url = `${serverAddr}${idx}?embedded=true`
-    try {
-      await got.get(`${serverAddr}index.html`, { responseType: 'text', resolveBodyOnly: true })
-    }
-    catch {
-      this.view.webview.html = `
+
+    this.view.webview.html = `
 <head>
   <meta
     http-equiv="Content-Security-Policy"
@@ -105,6 +102,11 @@ code {
   <div style="text-align: center"><p>Slidev server is not found on <code>${serverAddr}</code></p><p>please run <code style="color: #679bbb">$ slidev</code> first</p><br><button onclick="configPort()">Config Server Port</button></div>
 </body>
 `
+
+    try {
+      await got.get(`${serverAddr}index.html`, { responseType: 'text', resolveBodyOnly: true })
+    }
+    catch {
       return
     }
 
@@ -124,9 +126,9 @@ code {
 </body>
 `
 
-    setTimeout(() => {
-      this.updateColor()
-    }, 1000)
+    setTimeout(() => this.updateColor(), 10)
+    setTimeout(() => this.updateColor(), 300)
+    setTimeout(() => this.updateColor(), 1000)
   }
 
   public async resolveWebviewView(webviewView: WebviewView) {

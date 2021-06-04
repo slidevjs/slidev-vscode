@@ -7,7 +7,7 @@ export class FoldingProvider implements FoldingRangeProvider {
 
   provideFoldingRanges(document: TextDocument): FoldingRange[] {
     if (document === ctx.doc && ctx.data)
-      return ctx.data.slides.map(i => new FoldingRange(i.start - 1, i.end - 1, FoldingRangeKind.Region))
+      return ctx.data?.slides?.map(i => new FoldingRange(i.start - 1, i.end - 1, FoldingRangeKind.Region)) || []
     return []
   }
 }

@@ -13,14 +13,19 @@ export function configEditor() {
   const previewProvider = new PreviewProvider()
   let previousSlideIndex = -1
 
-  function update() {
+  async function update() {
     const editor = window.activeTextEditor
     const doc = editor?.document
     if (!editor || !doc || doc.languageId !== 'markdown')
       return
+    const path = doc.uri.fsPath
+
+    // ignore for sub entries
+    if (ctx.data?.entries?.includes(path) && ctx.data.filepath !== path)
+      return
 
     ctx.doc = doc
-    ctx.data = parser.parse(doc.getText(), doc.uri.fsPath)
+    ctx.data = await parser.load(path, {}, doc.getText())
   }
 
   function updateCurrentSlide() {
@@ -58,10 +63,7 @@ export function configEditor() {
   })
 
   commands.registerCommand('slidev.goto', async(idx: number) => {
-    if (ctx.doc) {
-      const editor = await window.showTextDocument(ctx.doc)
-      revealSlide(idx, editor)
-    }
+    revealSlide(idx)
   })
 
   commands.registerCommand('slidev.next', async() => {

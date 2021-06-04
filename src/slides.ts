@@ -1,4 +1,5 @@
-import { Position, Range, Selection, TextEditorRevealType, window } from 'vscode'
+import { SlideInfo, SlideInfoWithPath } from '@slidev/types'
+import { Position, Range, Selection, TextEditorRevealType, window, workspace, Uri } from 'vscode'
 import { ctx } from './ctx'
 
 export function getCurrentSlideIndex(editor = window.activeTextEditor) {
@@ -8,13 +9,25 @@ export function getCurrentSlideIndex(editor = window.activeTextEditor) {
   return ctx.data?.slides.findIndex(i => i.start <= line && i.end >= line)
 }
 
-export function revealSlide(idx: number, editor = window.activeTextEditor) {
-  if (idx < 0 || !editor)
+export async function revealSlide(idx: number, editor = window.activeTextEditor) {
+  if (idx < 0)
     return
-  const slide = ctx.data?.slides[idx]
+  // @ts-expect-error
+  let slide: SlideInfoWithPath & SlideInfo = ctx.data?.slides[idx]
+  // @ts-expect-error
+  slide = slide?.source || slide
   if (!slide)
     return
-  const pos = new Position(slide.start, 0)
+
+  if (slide.filepath)
+    editor = await window.showTextDocument(await workspace.openTextDocument(Uri.file(slide.filepath)))
+  else if (ctx.doc)
+    editor = await window.showTextDocument(ctx.doc)
+
+  if (!editor)
+    return
+
+  const pos = new Position(slide.start || 0, 0)
   const range = new Range(pos, pos)
   editor.selection = new Selection(pos, pos)
   editor.revealRange(range, TextEditorRevealType.AtTop)

@@ -145,8 +145,8 @@
   "devDependencies": {
     "@antfu/eslint-config": "^0.6.5",
     "@antfu/utils": "^0.1.6",
-    "@slidev/parser": "^0.19.4",
-    "@slidev/types": "^0.19.4",
+    "@slidev/parser": "^0.19.5",
+    "@slidev/types": "^0.19.5",
     "@types/markdown-it": "^12.0.1",
     "@types/node": "^15.12.0",
     "@types/vscode": "^1.52.0",

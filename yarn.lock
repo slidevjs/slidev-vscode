@@ -305,18 +305,18 @@
   resolved "https://registry.yarnpkg.com/@sindresorhus/is/-/is-4.0.1.tgz#d26729db850fa327b7cacc5522252194404226f5"
   integrity sha512-Qm9hBEBu18wt1PO2flE7LPb30BHMQt1eQgbV76YntdNk73XZGpn3izvGTYxbGgzXKgbCjiia0uxTd3aTNQrY/g==
 
-"@slidev/parser@^0.19.4":
-  version "0.19.4"
-  resolved "https://registry.yarnpkg.com/@slidev/parser/-/parser-0.19.4.tgz#9a2c59e8fc3424c3280262d85db06987a711ed39"
-  integrity sha512-xrJkYqGWQISJVgSUACajmjPPM8p/zJFGYvPHlzoadP08FvQ3luIv4236O675PDA3t93xS1LVlkseokgYmQYwiA==
+"@slidev/parser@^0.19.5":
+  version "0.19.5"
+  resolved "https://registry.yarnpkg.com/@slidev/parser/-/parser-0.19.5.tgz#1146030c4e4ad04548ddb602e001a9280a740222"
+  integrity sha512-0Lscy0oQyyx2xhH+y4gHrEj/J14xJqRBs26z1f4TUH7i60y8fgrijtfSzLs1vYxTn1eN+mGwar46BEW2KcXYTg==
   dependencies:
-    "@slidev/types" "0.19.4"
+    "@slidev/types" "0.19.5"
     js-yaml "^4.1.0"
 
-"@slidev/types@0.19.4", "@slidev/types@^0.19.4":
-  version "0.19.4"
-  resolved "https://registry.yarnpkg.com/@slidev/types/-/types-0.19.4.tgz#47c032ccb063321ee3faaaaafd2249fcd63c8972"
-  integrity sha512-gXxfsQtBdTE+E177stz674vRR6FhooUvLPZUUTNiig7+tI1Hi8ZikDibI8BqemWd2/bCtM+O0lO5uyybsCHx4g==
+"@slidev/types@0.19.5", "@slidev/types@^0.19.5":
+  version "0.19.5"
+  resolved "https://registry.yarnpkg.com/@slidev/types/-/types-0.19.5.tgz#5930ae6240c1c2a8736742c8aa6c33b6de6e3f90"
+  integrity sha512-pHGkzsYSuodtFI9Fhwo11yCkIsfN9/trQ6Fd6BvQ8MQNdwQsMXeVTSfAckrFq3sFLDBNTbwYf4xLroZJ9oefVg==
 
 "@szmarczak/http-timer@^4.0.5":
   version "4.0.5"

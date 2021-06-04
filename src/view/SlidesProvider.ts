@@ -16,7 +16,7 @@ export class SlidesProvider implements TreeDataProvider<SlideItem> {
 
   getChildren(element?: SlideItem): ProviderResult<SlideItem[]> {
     if (!element)
-      return ctx.data?.slides.map(i => new SlideItem(i))
+      return ctx.data?.slides?.map(i => new SlideItem(i))
     return []
   }
 }

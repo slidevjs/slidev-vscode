@@ -1,4 +1,4 @@
-import { Command, commands, EventEmitter, WebviewView, WebviewViewProvider, FoldingRange, FoldingRangeKind, FoldingRangeProvider, languages, Position, ProviderResult, Range, Selection, TextDocument, TextEditorRevealType, ThemeIcon, TreeDataProvider, TreeItem, window, workspace } from 'vscode'
+import { Command, commands, EventEmitter, WebviewView, WebviewViewProvider, FoldingRange, FoldingRangeKind, FoldingRangeProvider, languages, Position, ProviderResult, Range, Selection, TextDocument, TextEditorRevealType, ThemeIcon, TreeDataProvider, TreeItem, window, workspace, ConfigurationTarget } from 'vscode'
 import got from 'got'
 // @ts-expect-error
 import * as parser from '@slidev/parser/fs'
@@ -272,10 +272,20 @@ export class PreviewProvider implements WebviewViewProvider {
       localResourceRoots: [ctx.ext.extensionUri],
     }
 
-    // TODO: get port from process info
-    const serverAddr = 'http://localhost:3030/'
-    const url = `${serverAddr}${idx}?embedded=true`
+    this.view.webview.onDidReceiveMessage(async({ command }) => {
+      if (command === 'config-port') {
+        const port = await window.showInputBox({
+          placeHolder: 'Server port',
+        })
+        if (port && !isNaN(+port)) {
+          await setServerPort(+port || 3030)
+          this.refresh()
+        }
+      }
+    })
 
+    const serverAddr = `http://localhost:${getServerPort()}/`
+    const url = `${serverAddr}${idx}?embedded=true`
     try {
       await got.get(`${serverAddr}index.html`, { responseType: 'text', resolveBodyOnly: true })
     }
@@ -287,8 +297,34 @@ export class PreviewProvider implements WebviewViewProvider {
     content="default-src * 'unsafe-inline' 'unsafe-eval'; script-src * 'unsafe-inline' 'unsafe-eval'; connect-src * 'unsafe-inline'; img-src * data: blob: 'unsafe-inline'; frame-src *; style-src * 'unsafe-inline';"
   />
 <head>
+<script>
+  const vscode = acquireVsCodeApi()
+  window.configPort = () => {
+    vscode.postMessage({
+      command: 'config-port'
+    })
+  }
+</script>
+<style>
+button {
+  background: var(--vscode-button-secondaryBackground);
+  color: var(--vscode-button-secondaryForeground);
+  border: none;
+  padding: 8px 12px;
+}
+button:hover {
+  background: var(--vscode-button-secondaryHoverBackground);
+}
+code {
+  font-size: 0.9em;
+  font-family: var(--vscode-editor-font-family);
+  background: var(--vscode-textBlockQuote-border);
+  border-radius: 4px;
+  padding: 3px 5px;
+}
+</style>
 <body>
-  <div style="text-align: center"><p>Sorry, the preview server not start</p><p>please run <code style="color: orange">slide dev</code> first</p></div>
+  <div style="text-align: center"><p>Slidev server is not found on <code>${serverAddr}</code></p><p>please run <code style="color: #679bbb">$ slidev</code> first</p><br><button onclick="configPort()">Config Server Port</button></div>
 </body>
 `
       return
@@ -335,4 +371,12 @@ export function isDarkTheme() {
 
   // IDK, maybe dark
   return true
+}
+
+function getServerPort() {
+  return workspace.getConfiguration('slidev').get('port') || 3030
+}
+
+async function setServerPort(port: number) {
+  await workspace.getConfiguration('slidev').update('port', port, ConfigurationTarget.Workspace)
 }

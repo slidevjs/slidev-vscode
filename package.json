@@ -101,7 +101,14 @@
     "configuration": {
       "type": "object",
       "title": "Slidev",
-      "properties": {}
+      "properties": {
+        "slidev.port": {
+          "type": "number",
+          "scope": "window",
+          "description": "The port of Slidev server",
+          "default": 3030
+        }
+      }
     },
     "viewsContainers": {
       "activitybar": [

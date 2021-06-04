@@ -102,6 +102,12 @@
       "type": "object",
       "title": "Slidev",
       "properties": {
+        "slidev.enabled": {
+          "type": "boolean",
+          "scope": "window",
+          "description": "Force enable extension",
+          "default": false
+        },
         "slidev.port": {
           "type": "number",
           "scope": "window",

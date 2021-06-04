@@ -12,6 +12,7 @@ export function setConfig<T>(key: string, v?: T) {
 export interface Config {
   root: string
   port: number
+  enabled: boolean
 }
 
 export const config = new Proxy(

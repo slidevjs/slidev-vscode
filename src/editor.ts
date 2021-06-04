@@ -295,14 +295,14 @@ export class PreviewProvider implements WebviewViewProvider {
 <head>
 <script>
   const vscode = acquireVsCodeApi();
-  window.cl = () => {
+  window.setPort = () => {
     vscode.postMessage({
       command: "set"
     });
   }
 </script>
 <body>
-  <div style="text-align: center"><p>Sorry, the preview server not start on ${serverAddr}</p><p>please run <code style="color: orange">slide dev</code> first</p><button onclick="cl()">Set the port</button></div>
+  <div style="text-align: center"><p>Sorry, the preview server not start on ${serverAddr}</p><p>please run <code style="color: orange">slide dev</code> first</p><button onclick="setPort()">Set the port</button></div>
 </body>
 `
       return

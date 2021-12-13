@@ -116,11 +116,27 @@ code {
     http-equiv="Content-Security-Policy"
     content="default-src * 'unsafe-inline' 'unsafe-eval'; script-src * 'unsafe-inline' 'unsafe-eval'; connect-src * 'unsafe-inline'; img-src * data: blob: 'unsafe-inline'; frame-src *; style-src * 'unsafe-inline';"
   />
+  <style>
+  body {
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+  }
+  iframe {
+    border: none;
+    width: 100%;
+    height: 100%;
+  }
+  </style>
 <head>
 <body>
+  <iframe id="iframe" src="${url}"></iframe>
   <script>
-    window.addEventListener('load', () => {
-      location.replace(${JSON.stringify(url)})
+    var iframe = document.getElementById('iframe')
+    window.addEventListener('message', ({ data }) => {
+      if (data && data.target === 'slidev') {
+        iframe.contentWindow.postMessage(data, '${serverAddr}')
+      }
     })
   </script>
 </body>

@@ -64,6 +64,7 @@ export function configEditor() {
 
   commands.registerCommand('slidev.goto', async(idx: number) => {
     revealSlide(idx)
+    previewProvider.updateSlide(idx)
   })
 
   commands.registerCommand('slidev.next', async() => {

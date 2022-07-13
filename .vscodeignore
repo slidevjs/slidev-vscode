@@ -3,7 +3,7 @@
 node_modules/
 src/
 .gitignore
-package-lock.json
 .eslintrc.js
-yarn.lock
+.tazerc.json
 tsconfig.json
+*.yaml

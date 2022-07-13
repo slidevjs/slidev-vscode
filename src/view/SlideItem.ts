@@ -1,5 +1,5 @@
-import { Command, ThemeIcon, TreeItem } from 'vscode'
-import { SlideInfo } from '@slidev/types'
+import type { Command, ThemeIcon, TreeItem } from 'vscode'
+import type { SlideInfo } from '@slidev/types'
 import { ctx } from '../ctx'
 
 export class SlideItem implements TreeItem {

@@ -1,4 +1,5 @@
-import { EventEmitter, ProviderResult, TreeDataProvider } from 'vscode'
+import type { ProviderResult, TreeDataProvider } from 'vscode'
+import { EventEmitter } from 'vscode'
 import { ctx } from '../ctx'
 import { SlideItem } from './SlideItem'
 

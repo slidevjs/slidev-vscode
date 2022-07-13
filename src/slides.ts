@@ -1,5 +1,5 @@
-import { SlideInfo, SlideInfoWithPath } from '@slidev/types'
-import { Position, Range, Selection, TextEditorRevealType, window, workspace, Uri } from 'vscode'
+import type { SlideInfo, SlideInfoWithPath } from '@slidev/types'
+import { Position, Range, Selection, TextEditorRevealType, Uri, window, workspace } from 'vscode'
 import { ctx } from './ctx'
 
 export function getCurrentSlideIndex(editor = window.activeTextEditor) {
@@ -12,9 +12,9 @@ export function getCurrentSlideIndex(editor = window.activeTextEditor) {
 export async function revealSlide(idx: number, editor = window.activeTextEditor) {
   if (idx < 0)
     return
-  // @ts-expect-error
+  // @ts-expect-error cast
   let slide: SlideInfoWithPath & SlideInfo = ctx.data?.slides[idx]
-  // @ts-expect-error
+  // @ts-expect-error cast
   slide = slide?.source || slide
   if (!slide)
     return

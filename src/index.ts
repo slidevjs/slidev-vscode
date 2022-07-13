@@ -1,7 +1,7 @@
-
 import { existsSync, promises as fs } from 'fs'
 import { join } from 'path'
-import { commands, ExtensionContext, workspace } from 'vscode'
+import type { ExtensionContext } from 'vscode'
+import { commands, workspace } from 'vscode'
 import { config } from './config'
 import { ctx } from './ctx'
 import { configEditor } from './editor'

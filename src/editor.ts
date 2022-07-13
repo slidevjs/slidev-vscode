@@ -1,9 +1,8 @@
 import { commands, languages, window, workspace } from 'vscode'
-// @ts-expect-error
 import * as parser from '@slidev/parser/fs'
 import Markdown from 'markdown-it'
 import { ctx } from './ctx'
-import { SlideItem } from './view/SlideItem'
+import type { SlideItem } from './view/SlideItem'
 import { SlidesProvider } from './view/SlidesProvider'
 import { FoldingProvider } from './view/FoldingProvider'
 import { PreviewProvider } from './view/PreviewProvider'
@@ -40,7 +39,7 @@ export function configEditor() {
   }
 
   workspace.createFileSystemWatcher('**/*.md', true, false)
-    .onDidChange(async(uri) => {
+    .onDidChange(async (uri) => {
       if (uri.fsPath === ctx.doc?.uri.fsPath)
         ctx.data = await parser.load(uri.fsPath)
     })
@@ -62,12 +61,12 @@ export function configEditor() {
     showCollapseAll: true,
   })
 
-  commands.registerCommand('slidev.goto', async(idx: number) => {
+  commands.registerCommand('slidev.goto', async (idx: number) => {
     revealSlide(idx)
     previewProvider.updateSlide(idx)
   })
 
-  commands.registerCommand('slidev.next', async() => {
+  commands.registerCommand('slidev.next', async () => {
     const editor = window.activeTextEditor
     if (!editor || editor.document !== ctx.doc)
       return
@@ -76,7 +75,7 @@ export function configEditor() {
       revealSlide(index + 1)
   })
 
-  commands.registerCommand('slidev.prev', async() => {
+  commands.registerCommand('slidev.prev', async () => {
     const editor = window.activeTextEditor
     if (!editor || editor.document !== ctx.doc)
       return
@@ -89,14 +88,14 @@ export function configEditor() {
     return arr
   }
 
-  commands.registerCommand('slidev.move-up', async(item: SlideItem) => {
+  commands.registerCommand('slidev.move-up', async (item: SlideItem) => {
     if (!ctx.data?.slides || item.info.index <= 0)
       return
     move(ctx.data.slides, item.info.index, item.info.index - 1)
     parser.save(ctx.data)
   })
 
-  commands.registerCommand('slidev.move-down', async(item: SlideItem) => {
+  commands.registerCommand('slidev.move-down', async (item: SlideItem) => {
     if (!ctx.data?.slides || item.info.index >= ctx.data.slides.length)
       return
     move(ctx.data.slides, item.info.index, item.info.index + 1)
@@ -105,7 +104,7 @@ export function configEditor() {
 
   commands.registerCommand('slidev.preview-refresh', previewProvider.refresh.bind(previewProvider))
 
-  commands.registerCommand('slidev.markdown-to-html', async() => {
+  commands.registerCommand('slidev.markdown-to-html', async () => {
     const editor = window.activeTextEditor
     const doc = editor?.document
     if (!editor || !doc)

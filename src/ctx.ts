@@ -1,5 +1,6 @@
-import { ExtensionContext, EventEmitter, TextDocument } from 'vscode'
-import { SlidevMarkdown } from '@slidev/types'
+import type { ExtensionContext, TextDocument } from 'vscode'
+import { EventEmitter } from 'vscode'
+import type { SlidevMarkdown } from '@slidev/types'
 
 export class Context {
   private _onDataUpdate = new EventEmitter<SlidevMarkdown | undefined>()

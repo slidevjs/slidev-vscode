@@ -1,4 +1,5 @@
-import { WebviewView, WebviewViewProvider, window } from 'vscode'
+import type { WebviewView, WebviewViewProvider } from 'vscode'
+import { window } from 'vscode'
 import got from 'got'
 import { ctx } from '../ctx'
 import { config, setConfig } from '../config'
@@ -50,7 +51,7 @@ export class PreviewProvider implements WebviewViewProvider {
       localResourceRoots: [ctx.ext.extensionUri],
     }
 
-    this.view.webview.onDidReceiveMessage(async({ command }) => {
+    this.view.webview.onDidReceiveMessage(async ({ command }) => {
       if (command === 'config-port') {
         const port = await window.showInputBox({
           placeHolder: 'Server port',

@@ -1,4 +1,5 @@
-import { EventEmitter, FoldingRange, FoldingRangeKind, FoldingRangeProvider, TextDocument } from 'vscode'
+import type { FoldingRangeProvider, TextDocument } from 'vscode'
+import { EventEmitter, FoldingRange, FoldingRangeKind } from 'vscode'
 import { ctx } from '../ctx'
 
 export class FoldingProvider implements FoldingRangeProvider {

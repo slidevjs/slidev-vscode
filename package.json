@@ -1,27 +1,27 @@
 {
+  "publisher": "antfu",
   "name": "slidev",
   "preview": true,
-  "packageManager": "pnpm@7.5.1",
   "displayName": "Slidev",
   "version": "0.3.3",
+  "packageManager": "pnpm@7.5.1",
   "description": "Slidev support for VS Code",
-  "publisher": "antfu",
   "license": "MIT",
-  "icon": "res/logo.png",
   "repository": {
     "type": "git",
     "url": "https://github.com/slidevjs/slidev-vscode"
   },
-  "engines": {
-    "vscode": "^1.52.0"
-  },
   "categories": [
     "Other"
   ],
+  "main": "./dist/index.js",
+  "icon": "res/logo.png",
+  "engines": {
+    "vscode": "^1.52.0"
+  },
   "activationEvents": [
     "onStartupFinished"
   ],
-  "main": "./dist/index.js",
   "contributes": {
     "commands": [
       {
@@ -147,6 +147,7 @@
     "build": "tsup src/index.ts --dts --external=vscode",
     "dev": "nr build --watch",
     "vscode:prepublish": "nr build",
+    "lint": "eslint .",
     "publish": "vsce publish --no-dependencies",
     "pack": "vsce package --no-dependencies",
     "release": "bump && nr publish"

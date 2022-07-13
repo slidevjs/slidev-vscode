@@ -2,11 +2,13 @@ import { commands, languages, window, workspace } from 'vscode'
 import * as parser from '@slidev/parser/fs'
 import Markdown from 'markdown-it'
 import { ctx } from './ctx'
+import { config } from './config'
 import type { SlideItem } from './view/SlideItem'
 import { SlidesProvider } from './view/SlidesProvider'
 import { FoldingProvider } from './view/FoldingProvider'
 import { PreviewProvider } from './view/PreviewProvider'
 import { getCurrentSlideIndex, revealSlide } from './slides'
+import { updateAnnotaions } from './annotations'
 
 export function configEditor() {
   const previewProvider = new PreviewProvider()
@@ -25,6 +27,9 @@ export function configEditor() {
 
     ctx.doc = doc
     ctx.data = await parser.load(path, {}, doc.getText())
+
+    if (config.annotations)
+      updateAnnotaions(doc, editor)
   }
 
   function updateCurrentSlide() {
@@ -129,3 +134,4 @@ export function configEditor() {
 
   update()
 }
+

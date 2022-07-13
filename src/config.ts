@@ -13,6 +13,7 @@ export interface Config {
   root: string
   port: number
   enabled: boolean
+  annotations: boolean
 }
 
 export const config = new Proxy(

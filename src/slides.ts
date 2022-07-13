@@ -12,9 +12,9 @@ export function getCurrentSlideIndex(editor = window.activeTextEditor) {
 export async function revealSlide(idx: number, editor = window.activeTextEditor) {
   if (idx < 0)
     return
-  // @ts-expect-error cast
+  // @ts-expect-error casting
   let slide: SlideInfoWithPath & SlideInfo = ctx.data?.slides[idx]
-  // @ts-expect-error cast
+  // @ts-expect-error casting
   slide = slide?.source || slide
   if (!slide)
     return

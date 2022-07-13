@@ -109,6 +109,12 @@
           "description": "Force enable extension",
           "default": false
         },
+        "slidev.annotations": {
+          "type": "boolean",
+          "scope": "window",
+          "description": "Display annotations for slides markdown files",
+          "default": true
+        },
         "slidev.port": {
           "type": "number",
           "scope": "window",

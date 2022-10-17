@@ -17,7 +17,7 @@ const frontmatterDecoration = window.createTextEditorDecorationType({
 export function updateAnnotaions(doc: TextDocument, editor: TextEditor) {
   let slideCount = 0
   const dividerRanges: DecorationOptions[] = []
-  const frontmetterRanges: DecorationOptions[] = []
+  const frontmatterRanges: DecorationOptions[] = []
 
   const text = doc.getText()
 
@@ -62,7 +62,7 @@ export function updateAnnotaions(doc: TextDocument, editor: TextEditor) {
         const frontmatterOptions = {
           range: new Range(start, start),
         }
-        frontmetterRanges.push(frontmatterOptions)
+        frontmatterRanges.push(frontmatterOptions)
       }
       else {
         const dividerOptions = {
@@ -79,7 +79,7 @@ export function updateAnnotaions(doc: TextDocument, editor: TextEditor) {
           const decoOptions = {
             range: new Range(start, new Position(endLine, 0)),
           }
-          frontmetterRanges.push(decoOptions)
+          frontmatterRanges.push(decoOptions)
           if (endLine !== start.line) {
             const endDividerOptions = {
               range: new Range(new Position(endLine, 0), new Position(endLine, 0)),
@@ -98,6 +98,6 @@ export function updateAnnotaions(doc: TextDocument, editor: TextEditor) {
   )
   editor.setDecorations(
     frontmatterDecoration,
-    frontmetterRanges,
+    frontmatterRanges,
   )
 }

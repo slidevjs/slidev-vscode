@@ -1,5 +1,5 @@
 import { Position, Range, window } from 'vscode'
-import type { TextDocument, TextEditor } from 'vscode'
+import type { DecorationOptions, TextDocument, TextEditor } from 'vscode'
 import type { SlideInfo } from '@slidev/types'
 import { ctx } from './ctx'
 
@@ -15,8 +15,9 @@ const frontmatterDecoration = window.createTextEditorDecorationType({
 })
 
 export function updateAnnotaions(doc: TextDocument, editor: TextEditor) {
-  const dividerRanges: Range[] = []
-  const frontmetterRanges: Range[] = []
+  let slideCount = 0
+  const dividerRanges: DecorationOptions[] = []
+  const frontmetterRanges: DecorationOptions[] = []
 
   const text = doc.getText()
 
@@ -35,23 +36,57 @@ export function updateAnnotaions(doc: TextDocument, editor: TextEditor) {
       ].find(i => i.text.startsWith('---'))
       if (!line)
         return null
+
       const start = new Position(line.lineNumber, 0)
-      dividerRanges.push(
-        new Range(start, new Position(line.lineNumber, line.text.length)),
-      )
+      const slideIndexText = (++slideCount).toString()
+      const startDividerRange = new Range(start, new Position(line.lineNumber, line.text.length))
+      const slideIndexRenderOptions = {
+        after: {
+          contentText: `\u00A0<${slideIndexText}>\u00A0`,
+          backgroundColor: '#006064',
+          color: '#fff',
+          fontWeight: 'bold',
+        },
+      }
 
       const hasFrontmatter = Object.keys(i.frontmatter).length > 0
       if (!hasFrontmatter) {
-        frontmetterRanges.push(new Range(start, start))
+        const dividerOptions = {
+          range: startDividerRange,
+          renderOptions: slideIndexRenderOptions,
+        }
+        dividerRanges.push(
+          dividerOptions,
+        )
+
+        const frontmatterOptions = {
+          range: new Range(start, start),
+        }
+        frontmetterRanges.push(frontmatterOptions)
       }
       else {
+        const dividerOptions = {
+          range: startDividerRange,
+        }
+        dividerRanges.push(
+          dividerOptions,
+        )
+
         const range = text.slice(doc.offsetAt(start))
         const match = range.match(/^---[\s\S]*?\n---/)
         if (match && match.index != null) {
           const endLine = doc.positionAt(doc.offsetAt(start) + match.index + match[0].length).line
-          frontmetterRanges.push(new Range(start, new Position(endLine, 0)))
-          if (endLine !== start.line)
-            dividerRanges.push(new Range(new Position(endLine, 0), new Position(endLine, 0)))
+          const decoOptions = {
+            range: new Range(start, new Position(endLine, 0)),
+          }
+          frontmetterRanges.push(decoOptions)
+          if (endLine !== start.line) {
+            const endDividerOptions = {
+              range: new Range(new Position(endLine, 0), new Position(endLine, 0)),
+              renderOptions: slideIndexRenderOptions,
+            }
+            dividerRanges.push(endDividerOptions)
+          }
         }
       }
     })

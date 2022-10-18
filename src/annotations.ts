@@ -1,5 +1,5 @@
 import { Position, Range, window } from 'vscode'
-import type { DecorationOptions, TextDocument, TextEditor } from 'vscode'
+import type { DecorationInstanceRenderOptions, DecorationOptions, TextDocument, TextEditor } from 'vscode'
 import type { SlideInfo } from '@slidev/types'
 import { ctx } from './ctx'
 
@@ -40,24 +40,20 @@ export function updateAnnotaions(doc: TextDocument, editor: TextEditor) {
       const start = new Position(line.lineNumber, 0)
       const slideIndexText = (++slideCount).toString()
       const startDividerRange = new Range(start, new Position(line.lineNumber, line.text.length))
-      const slideIndexRenderOptions = {
+      const slideIndexRenderOptions: DecorationInstanceRenderOptions = {
         after: {
-          contentText: `\u00A0<${slideIndexText}>\u00A0`,
-          backgroundColor: '#006064',
-          color: '#fff',
+          contentText: ` #${slideIndexText}`,
           fontWeight: 'bold',
+          color: '#8888',
         },
       }
 
       const hasFrontmatter = Object.keys(i.frontmatter).length > 0
       if (!hasFrontmatter) {
-        const dividerOptions = {
+        dividerRanges.push({
           range: startDividerRange,
           renderOptions: slideIndexRenderOptions,
-        }
-        dividerRanges.push(
-          dividerOptions,
-        )
+        })
 
         const frontmatterOptions = {
           range: new Range(start, start),
@@ -65,12 +61,10 @@ export function updateAnnotaions(doc: TextDocument, editor: TextEditor) {
         frontmatterRanges.push(frontmatterOptions)
       }
       else {
-        const dividerOptions = {
+        dividerRanges.push({
           range: startDividerRange,
-        }
-        dividerRanges.push(
-          dividerOptions,
-        )
+          renderOptions: slideIndexRenderOptions,
+        })
 
         const range = text.slice(doc.offsetAt(start))
         const match = range.match(/^---[\s\S]*?\n---/)
@@ -83,7 +77,6 @@ export function updateAnnotaions(doc: TextDocument, editor: TextEditor) {
           if (endLine !== start.line) {
             const endDividerOptions = {
               range: new Range(new Position(endLine, 0), new Position(endLine, 0)),
-              renderOptions: slideIndexRenderOptions,
             }
             dividerRanges.push(endDividerOptions)
           }

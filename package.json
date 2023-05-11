@@ -3,7 +3,7 @@
   "name": "slidev",
   "preview": true,
   "displayName": "Slidev",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "packageManager": "pnpm@7.5.1",
   "description": "Slidev support for VS Code",
   "license": "MIT",

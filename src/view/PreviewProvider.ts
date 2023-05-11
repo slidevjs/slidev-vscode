@@ -62,8 +62,14 @@ export class PreviewProvider implements WebviewViewProvider {
         }
       }
     })
+    
+    let serverAddr = `http://127.0.0.1:${config.port}/`
 
-    const serverAddr = `http://localhost:${config.port}/`
+    const indexUrl = `${serverAddr}index.html`
+    const resolvedBody = await got.get(indexUrl, { responseType: 'text', resolveBodyOnly: true }).catch(() => null)
+    if (!resolvedBody) {
+      serverAddr = `http://[::1]:${config.port}/`
+    }
     const url = `${serverAddr}${idx}?embedded=true`
 
     this.view.webview.html = `

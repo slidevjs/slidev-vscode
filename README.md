@@ -7,7 +7,7 @@
 
 <p align="center">
 Presentation <b>slide</b>s for <b>dev</b>elopers<br>
-<sup><del>who uses VS Code 🤣</del></sup>
+<sup><del>who use VS Code 🤣</del></sup>
 </p>
 
 
@@ -20,7 +20,7 @@ Presentation <b>slide</b>s for <b>dev</b>elopers<br>
 
 **Status**: Preview
 
-### Features
+## Features
 
 - View slides in the side panel
 - Go to next / prev buttons
@@ -29,6 +29,20 @@ Presentation <b>slide</b>s for <b>dev</b>elopers<br>
 - Convert Markdown to HTML
 
 <img width="974" src="https://user-images.githubusercontent.com/11247099/116809994-cc2caa00-ab73-11eb-879f-60585747c3c9.png">
+
+## Installation
+
+1. Open VS Code
+2. Select _Extensions_ in the left vertical toolbar
+3. Search for `slidev`
+4. Click on _Install_
+
+## Usage
+
+1. Open Command Palette
+2. Search for `slidev`
+3. Select `View: Show Slidev`
+4. Open a Slidev Markdown file
 
 ## Sponsors
 

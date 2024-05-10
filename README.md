@@ -1,3 +1,7 @@
+## The source code of VS Code extension is now [moved to the main repo](https://github.com/slidevjs/slidev/tree/main/packages/vscode). This repo is archived.
+
+----
+
 <br>
 <p align="center">
 <a href="https://github.com/slidevjs/slidev" target="_blank">
